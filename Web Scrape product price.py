@@ -80,7 +80,10 @@ def getPriceAmazon(url):
     driver.get(url)
     driverWaitForAmazon(driver)
     name = driver.find_elements(By.ID, "productTitle")[0].text
-    price = driver.find_elements(By.CLASS_NAME, "a-section.a-spacing-none.aok-align-center")[0].text
+    price_symbol = driver.find_elements(By.CLASS_NAME, "a-price-symbol")[0].text
+    price_whole = driver.find_elements(By.CLASS_NAME, "a-price-whole")[0].text
+    price_decimal = driver.find_elements(By.CLASS_NAME, "a-price-fraction")[0].text
+    price = price_symbol + '' + price_whole + '.' + price_decimal
     info = {'Product': name, 'Price': price}
     return info
 
