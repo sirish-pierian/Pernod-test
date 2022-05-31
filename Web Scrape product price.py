@@ -8,9 +8,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
-df = pd.read_csv(r'D:\Absolut Retailer Links1.csv')
+df = pd.read_csv(r'D:\Absolut Products Price List.csv')
 df = pd.DataFrame(df)
-info = {"Product_Name":[], "Product_Price":[], "Retailer": []}
+info = {"Product_Name":[], "Product_Price":[], "Retailer": [], "Reference":[]}
 
 
 def getPriceSainbury(url):
@@ -19,7 +19,7 @@ def getPriceSainbury(url):
     driver.get(url)
     driverWaitForSainsburys(driver)
     name = driver.find_elements(By.CLASS_NAME, "pd__header")[0].text
-    price = driver.find_elements(By.CLASS_NAME, "pd__cost")[0].find_elements(By.TAG_NAME, "div")[0].text
+    price = "£" + driver.find_elements(By.CLASS_NAME, "pd__cost")[0].find_elements(By.TAG_NAME, "div")[0].text.split("£")[1]
     info = {'Product': name, 'Price': price}
     return info
 
@@ -90,55 +90,55 @@ def getPriceAmazon(url):
 
 def driverWaitForSainsburys(driver):
     try:
-        element = WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.CLASS_NAME, 'pd__cost')))
+        element = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, 'pd__cost')))
     except:
-        print("page never loaded")
+        print("Sainsburys page never loaded")
 
         
 def driverWaitForWaitrose(driver):
     try:
         element = WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.CLASS_NAME, "productPricing___3g80a")))
     except:
-        print("page never loaded")
+        print("Waitrose page never loaded")
 
         
 def driverWaitForOcado(driver):
     try:
-        element = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CLASS_NAME, 'bop-price__wrapper')))
+        element = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, 'bop-price__wrapper')))
     except:
-        print("page never loaded")
+        print("Ocado page never loaded")
 
 
 def driverWaitForTesco(driver):
     try:
-        element = WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.CLASS_NAME, "product-details-tile__title")))
+        element = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "product-details-tile__title")))
     except:
-        print("page never loaded")
+        print("Tesco page never loaded")
 
 
 def driverWaitForASDA(driver):
     try:
         element = WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.CLASS_NAME, 'pdp-main-details__price-container')))
     except:
-        print("page never loaded")
+        print("ASDA page never loaded")
 
 
 def driverWaitForMorrisons(driver):
     try:
         element = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, 'bop-title')))
     except:
-        print("page never loaded")
+        print("Morrisons page never loaded")
 
 
 def driverWaitForAmazon(driver):
     try:
-        element = WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.CLASS_NAME, "a-section.a-spacing-none.aok-align-center")))
+        element = WebDriverWait(driver, 40).until(EC.presence_of_element_located((By.CLASS_NAME, "a-section.a-spacing-none.aok-align-center")))
     except:
-        print("page never loaded")
+        print("Amazon page never loaded")
 
 def csvExport(info):
     df = pd.DataFrame(info)
-    df.to_csv (r'D:\export_dataframe4.csv', index = False, header=True)
+    df.to_csv (r'D:\Live prices4.csv', encoding="utf-8", index = False, header=True)
 
 for index, link_addresses in df.iterrows():
     for link_address in link_addresses:
@@ -148,6 +148,7 @@ for index, link_addresses in df.iterrows():
                     info["Product_Name"].append(product["Product"])
                     info["Product_Price"].append(product["Price"])
                     info["Retailer"].append("Sainsburys")
+                    info["Reference"].append(link_address)
                 except:
                     print("Failed to get product price Sainsbury")
                     
@@ -157,6 +158,7 @@ for index, link_addresses in df.iterrows():
                     info["Product_Name"].append(product["Product"])
                     info["Product_Price"].append(product["Price"])
                     info["Retailer"].append("Tesco")
+                    info["Reference"].append(link_address)
                 except:
                     print("Failed to get product price Tesco")
 
@@ -166,6 +168,7 @@ for index, link_addresses in df.iterrows():
                     info["Product_Name"].append(product["Product"])
                     info["Product_Price"].append(product["Price"])
                     info["Retailer"].append("Waitrose")
+                    info["Reference"].append(link_address)
                 except:
                     print("Failed to get product price Waitrose")                   
 
@@ -175,6 +178,7 @@ for index, link_addresses in df.iterrows():
                     info["Product_Name"].append(product["Product"])
                     info["Product_Price"].append(product["Price"])
                     info["Retailer"].append("ASDA")
+                    info["Reference"].append(link_address)
                 except:
                     print("Failed to get product price ASDA")
                     
@@ -184,6 +188,7 @@ for index, link_addresses in df.iterrows():
                     info["Product_Name"].append(product["Product"])
                     info["Product_Price"].append(product["Price"])
                     info["Retailer"].append("Morrisons")
+                    info["Reference"].append(link_address)
                 except:
                     print("Failed to get product price Morrisons")   
                     
@@ -193,6 +198,7 @@ for index, link_addresses in df.iterrows():
                     info["Product_Name"].append(product["Product"])
                     info["Product_Price"].append(product["Price"])
                     info["Retailer"].append("Ocado")
+                    info["Reference"].append(link_address)
                 except:
                     print("Failed to get product price Ocado")
 
@@ -202,6 +208,7 @@ for index, link_addresses in df.iterrows():
                     info["Product_Name"].append(product["Product"])
                     info["Product_Price"].append(product["Price"])
                     info["Retailer"].append("Amazon")
+                    info["Reference"].append(link_address)
                 except:
                     print("Failed to get product price Amazon")  
                     
